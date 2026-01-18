@@ -1,0 +1,6 @@
+com\example\chat\repository\ConversationRepository.class
+com\example\chat\repository\UserRepository.class
+com\example\chat\domain\Conversation.class
+com\example\chat\domain\Message.class
+com\example\chat\service\ConversationService.class
+com\example\chat\domain\User.class
