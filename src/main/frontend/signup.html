@@ -208,7 +208,7 @@ function signup() {
   btn.disabled = true;
   btn.textContent = "Signing up...";
 
-  fetch("http://localhost:8080/register", {
+  fetch("https://chatbotapp-8ks0.onrender.com/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ firstName, lastName, email, address, passWord })
@@ -233,7 +233,7 @@ function signup() {
 }
 
 function sendOTP(email) {
-  fetch("http://localhost:8080/send-otp", {
+  fetch("https://chatbotapp-8ks0.onrender.com/send-otp", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email })
@@ -247,7 +247,7 @@ function verifyOTP() {
     return;
   }
 
-  fetch("http://localhost:8080/verify-otp", {
+  fetch("https://chatbotapp-8ks0.onrender.com/verify-otp", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email: userEmail, otp })

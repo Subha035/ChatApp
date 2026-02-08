@@ -304,7 +304,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const email = getEmail();
     if (!token || !email) return;
 
-    fetch(`http://localhost:8080/chatbot/history/${encodeURIComponent(email)}`, {
+    fetch(`https://chatbotapp-8ks0.onrender.com/chatbot/history/${encodeURIComponent(email)}`, {
         headers: { Authorization: "Bearer " + token }
     })
     .then(res => res.json())
@@ -400,7 +400,7 @@ function sendMessage() {
     addMessage(text, true);
     input.value = "";
 
-    fetch("http://localhost:8080/chatbot/message", {
+    fetch("https://chatbotapp-8ks0.onrender.com/chatbot/message", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -452,7 +452,7 @@ function newChat() {
     const token = getToken();
     const email = getEmail();
 
-    fetch(`http://localhost:8080/conversation/new?email=${encodeURIComponent(email)}`, {
+    fetch(`https://chatbotapp-8ks0.onrender.com/conversation/new?email=${encodeURIComponent(email)}`, {
         method: "POST",
         headers: { Authorization: "Bearer " + token }
     })

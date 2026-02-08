@@ -196,7 +196,7 @@
         btn.disabled = true;
         btn.textContent = "Logging in...";
 
-        fetch("http://localhost:8080/login", {
+        fetch("https://chatbotapp-8ks0.onrender.com/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, passWord }),
@@ -223,7 +223,7 @@
       }
 
       function sendLoginOTP(email) {
-        fetch("http://localhost:8080/send-login-otp", {
+        fetch("https://chatbotapp-8ks0.onrender.com/send-login-otp", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email }),
@@ -238,7 +238,7 @@
           return;
         }
 
-        fetch("http://localhost:8080/verify-login-otp", {
+        fetch("https://chatbotapp-8ks0.onrender.com/verify-login-otp", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: userEmail, otp }),

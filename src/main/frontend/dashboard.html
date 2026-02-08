@@ -251,7 +251,7 @@ function loadProfile() {
         return;
     }
 
-    fetch(`http://localhost:8080/profile/${encodeURIComponent(email)}`, {
+    fetch(`https://chatbotapp-8ks0.onrender.com/profile/${encodeURIComponent(email)}`, {
         method: "GET",
         headers: {
             "Authorization": "Bearer " + token
@@ -326,7 +326,7 @@ function showConversations() {
         return;
     }
 
-    fetch(`http://localhost:8080/messages/partners/${encodeURIComponent(email)}`, {
+    fetch(`https://chatbotapp-8ks0.onrender.com/messages/partners/${encodeURIComponent(email)}`, {
         method: "GET",
         headers: {
             "Authorization": "Bearer " + token
@@ -363,7 +363,7 @@ function loadConversation(user1, user2) {
 
     const token = localStorage.getItem("token");
 
-    fetch(`http://localhost:8080/messages/conversation/${encodeURIComponent(user1)}/${encodeURIComponent(user2)}`, {
+    fetch(`https://chatbotapp-8ks0.onrender.com/messages/conversation/${encodeURIComponent(user1)}/${encodeURIComponent(user2)}`, {
         headers: {
             "Authorization": "Bearer " + token
         }
@@ -406,7 +406,7 @@ function showConversations() {
         return;
     }
 
-    fetch(`http://localhost:8080/chatbot/history/${encodeURIComponent(email)}`, {
+    fetch(`https://chatbotapp-8ks0.onrender.com/chatbot/history/${encodeURIComponent(email)}`, {
         method: "GET",
         headers: {
             "Authorization": "Bearer " + token
@@ -443,7 +443,7 @@ function loadConversation(user1, user2) {
 
     const token = localStorage.getItem("token");
 
-    fetch(`http://localhost:8080/messages/conversation/${encodeURIComponent(user1)}/${encodeURIComponent(user2)}`, {
+    fetch(`https://chatbotapp-8ks0.onrender.com/messages/conversation/${encodeURIComponent(user1)}/${encodeURIComponent(user2)}`, {
         headers: {
             "Authorization": "Bearer " + token
         }
