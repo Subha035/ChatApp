@@ -1,140 +1,277 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Chatbot with Sidebar</title>
+<meta charset="UTF-8" />
+<title>Chatbot</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <style>
-* { box-sizing: border-box; font-family: Arial, sans-serif; }
-body { margin: 0; background: #f5f5f5; }
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
 
+:root {
+  --primary: #007bff;
+  --dark: #2c3e50;
+}
+
+body {
+  margin: 0;
+  background: #f5f5f5;
+}
+
+/* ================= LAYOUT ================= */
 .chat-container {
-    display: flex;
-    height: 100vh;
+  display: flex;
+  height: 100dvh;
+  overflow: hidden;
 }
 
-/* Sidebar */
+/* ================= SIDEBAR ================= */
 .sidebar {
-    width: 250px;
-    background: #2c3e50;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    padding: 15px;
+  width: 280px;
+  background: var(--dark);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  transition: transform 0.3s ease;
 }
 
-.sidebar h3 { margin: 0 0 10px 0; }
+.sidebar h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
 
 .history-list {
-    flex: 1;
-    overflow-y: auto;
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  flex: 1;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .history-list li {
-    background: #34495e;
-    margin-bottom: 8px;
-    padding: 8px;
-    border-radius: 5px;
-    cursor: pointer;
+  background: #34495e;
+  margin-bottom: 10px;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-.history-list li:hover { background: #3d566e; }
+.history-list li:hover {
+  background: #3d566e;
+}
 
 .current-conversation {
-    background: #c0392b !important;
-    font-weight: bold;
+  background: #c0392b !important;
+  font-weight: bold;
 }
 
-/* Chat area */
+/* ================= CHAT ================= */
 .chat-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background: white;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  min-width: 0;
 }
 
+/* Header */
 .chat-header {
-    padding: 15px;
-    background: #007bff;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--primary);
+  color: white;
 }
 
+.chat-header h2 {
+  flex: 1;
+  margin: 0;
+  font-size: clamp(16px, 4vw, 20px);
+}
+
+.chat-header button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Messages */
 .messages-container {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .message {
-    max-width: 70%;
-    padding: 10px;
-    border-radius: 8px;
+  max-width: min(75%, 500px);
+  padding: 10px 14px;
+  border-radius: 10px;
+  line-height: 1.4;
+  word-break: break-word;
+  font-size: 14px;
 }
 
-.sent { align-self: flex-end; background: #007bff; color: white; }
-.received { align-self: flex-start; background: #f1f1f1; }
+.sent {
+  align-self: flex-end;
+  background: var(--primary);
+  color: white;
+}
 
+.received {
+  align-self: flex-start;
+  background: #f1f1f1;
+}
+
+/* Input */
 .input-area {
-    display: flex;
-    padding: 10px;
-    border-top: 1px solid #ddd;
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  background: white;
 }
 
 .input-area input {
-    flex: 1;
-    padding: 10px;
+  flex: 1;
+  padding: 12px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
 
 .send-btn {
-    margin-left: 10px;
-    padding: 10px 20px;
-    background: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
+  padding: 12px 16px;
+  border-radius: 6px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+}
+
+/* ================= MOBILE CONTROLS ================= */
+.mobile-toggle {
+  display: none;
+  background: #0056b3;
+  color: white;
+  border-radius: 6px;
+}
+
+/* ================= SMALL PHONES ================= */
+@media (max-width: 480px) {
+  .sidebar {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    transform: translateX(-100%);
+    z-index: 1000;
+  }
+
+  .sidebar.show {
+    transform: translateX(0);
+  }
+
+  .mobile-toggle {
+    display: inline-block;
+  }
+
+  .message {
+    max-width: 90%;
+    font-size: 15px;
+  }
+
+  .chat-header button:not(.mobile-toggle) {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+}
+
+/* ================= TABLETS ================= */
+@media (max-width: 900px) and (min-width: 481px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    transform: translateX(-100%);
+    z-index: 1000;
+  }
+
+  .sidebar.show {
+    transform: translateX(0);
+  }
+
+  .mobile-toggle {
+    display: inline-block;
+  }
+
+  .message {
+    max-width: 80%;
+  }
+}
+
+/* ================= LARGE DESKTOP ================= */
+@media (min-width: 1200px) {
+  .messages-container {
+    padding: 20px;
+  }
+
+  .message {
+    max-width: 600px;
+    font-size: 15px;
+  }
 }
 </style>
 </head>
 
 <body>
+
 <div class="chat-container">
 
-<!-- Sidebar -->
-<div class="sidebar">
+  <div class="sidebar" id="sidebar">
     <h3>Previous Conversations</h3>
     <ul class="history-list" id="historyList"></ul>
-</div>
+  </div>
 
-<!-- Chat -->
-<div class="chat-main">
+  <div class="chat-main">
     <div class="chat-header">
-        <h2>Chatbot Assistant</h2>
-        <button onclick="newChat()">+ New Chat</button>
-        <button onclick="goBack()">⬅ Back</button>
+      <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+      <h2>Chatbot Assistant</h2>
+      <button onclick="newChat()">+ New</button>
+      <button onclick="goBack()">⬅ Back</button>
     </div>
 
     <div class="messages-container" id="messagesContainer">
-        <div class="received">Hello! I’m your chatbot.</div>
+      <div class="received">Hello! I’m your chatbot.</div>
     </div>
 
     <div class="input-area">
-        <input type="text" id="messageInput" placeholder="Type a message..."
-               onkeypress="if(event.key==='Enter') sendMessage()">
-        <button class="send-btn" onclick="sendMessage()">Send</button>
+      <input
+        type="text"
+        id="messageInput"
+        placeholder="Type a message..."
+        onkeypress="if(event.key==='Enter') sendMessage()"
+      />
+      <button class="send-btn" onclick="sendMessage()">Send</button>
     </div>
-</div>
+  </div>
 
 </div>
 
+<script>
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("show");
+}
+</script>
 <script>
 /* ==========================
    GLOBAL STATE

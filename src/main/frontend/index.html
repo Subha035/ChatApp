@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+
+    <!-- REQUIRED for responsiveness -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5f7fa;
+        padding: 16px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 420px;
+        background: #ffffff;
+        padding: 24px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        background: #007bff;
+        color: white;
+      }
+
+      button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+
+      p {
+        text-align: center;
+        margin-top: 16px;
+        font-size: 14px;
+      }
+
+      a {
+        color: #007bff;
+        text-decoration: none;
+      }
+
+      /* Sections */
+      .login-section {
+        display: block;
+      }
+
+      .login-section.hidden {
+        display: none;
+      }
+
+      .otp-section {
+        display: none;
+        margin-top: 10px;
+      }
+
+      .otp-section.active {
+        display: block;
+      }
+
+      .info-message {
+        color: #0c5460;
+        background: #d1ecf1;
+        border: 1px solid #bee5eb;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        text-align: center;
+      }
+
+      .timer {
+        color: #dc3545;
+        font-weight: bold;
+        margin-top: 12px;
+        text-align: center;
+        font-size: 14px;
+      }
+
+      /* OTP buttons spacing */
+      .otp-section button + button {
+        margin-top: 10px;
+        background: #6c757d;
+      }
+
+      /* Tablet */
+      @media (min-width: 600px) {
+        .container {
+          padding: 30px;
+        }
+      }
+
+      /* Desktop */
+      @media (min-width: 1024px) {
+        body {
+          background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        .container {
+          max-width: 450px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- Login Form -->
+      <div id="loginForm" class="login-section">
+        <h2>Login</h2>
+
+        <input type="email" id="email" placeholder="Email" />
+        <input type="password" id="passWord" placeholder="Password" />
+
+        <button onclick="login()">Login</button>
+
+        <p>
+          Don't have an account?
+          <a href="signup.html">Sign Up</a>
+        </p>
+      </div>
+
+      <!-- OTP Verification -->
+      <div id="otpForm" class="otp-section">
+        <h2>Verify Login</h2>
+
+        <div class="info-message">
+          We've sent a verification OTP to
+          <strong id="displayEmail"></strong>
+        </div>
+
+        <input
+          type="text"
+          id="otp"
+          placeholder="Enter 6-digit OTP"
+          maxlength="6"
+        />
+
+        <button onclick="verifyLoginOTP()">Verify OTP</button>
+        <button onclick="resendLoginOTP()">Resend OTP</button>
+
+        <div class="timer">
+          OTP expires in <span id="countdown">300</span> seconds
+        </div>
+      </div>
+    </div>
+
+    <!-- YOUR JS REMAINS SAME -->
+    <script>
+      let userEmail = "";
+      let countdownInterval;
+
+      function login() {
+        const email = document.getElementById("email").value.trim();
+        const passWord = document.getElementById("passWord").value;
+
+        if (!email || !passWord) {
+          alert("Please enter email and password");
+          return;
+        }
+
+        const btn = event.target;
+        btn.disabled = true;
+        btn.textContent = "Logging in...";
+
+        fetch("http://localhost:8080/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, passWord }),
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error("Invalid email or password");
+            return res.text();
+          })
+          .then(() => {
+            userEmail = email;
+            sendLoginOTP(email);
+
+            document.getElementById("loginForm").classList.add("hidden");
+            document.getElementById("otpForm").classList.add("active");
+            document.getElementById("displayEmail").textContent = email;
+
+            startCountdown();
+          })
+          .catch((err) => {
+            alert(err.message);
+            btn.disabled = false;
+            btn.textContent = "Login";
+          });
+      }
+
+      function sendLoginOTP(email) {
+        fetch("http://localhost:8080/send-login-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+      }
+
+      function verifyLoginOTP() {
+        const otp = document.getElementById("otp").value.trim();
+
+        if (otp.length !== 6) {
+          alert("Enter valid 6-digit OTP");
+          return;
+        }
+
+        fetch("http://localhost:8080/verify-login-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: userEmail, otp }),
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error("OTP verification failed");
+            return res.json();
+          })
+          .then((data) => {
+            clearInterval(countdownInterval);
+            if (data.token) localStorage.setItem("token", data.token);
+            window.location.href = "dashboard.html";
+          })
+          .catch((err) => alert(err.message));
+      }
+
+      function resendLoginOTP() {
+        sendLoginOTP(userEmail);
+        clearInterval(countdownInterval);
+        startCountdown();
+        alert("OTP resent");
+      }
+
+      function startCountdown() {
+        let seconds = 300;
+        document.getElementById("countdown").textContent = seconds;
+
+        countdownInterval = setInterval(() => {
+          seconds--;
+          document.getElementById("countdown").textContent = seconds;
+
+          if (seconds <= 0) {
+            clearInterval(countdownInterval);
+            alert("OTP expired. Please login again.");
+            location.reload();
+          }
+        }, 1000);
+      }
+    </script>
+  </body>
+</html>
